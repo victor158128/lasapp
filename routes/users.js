@@ -322,7 +322,7 @@ function getOnePost(pid,room,callback){
              callback("");
            }
            else{
-            createPost(message.owner,message.class, message.message,message.postid, message.replyid,message.likes,function(post){
+            createPost(message.owner,message.class, message.message,message.postid, message.replyid,message.likes,message.type,function(post){
               //console.log(post);
                  callback(post);
            });
@@ -346,7 +346,7 @@ function searchPosts(keyword, room,callback){
            }
            else{
            (function getmessages(i) {
-          createPost(messages[i].owner,messages[i].class, messages[i].message,messages[i].postid, messages[i].replyid,messages[i].likes,function(post){
+          createPost(messages[i].owner,messages[i].class, messages[i].message,messages[i].postid, messages[i].replyid,messages[i].likes,messages[i].type,function(post){
             acc=acc+post;
             console.log("trying "+i);
 
@@ -387,6 +387,7 @@ function createPost(username,class_tag, data, post_id, comment_id,likes, user_ty
                          <button class=comment_button>Comment</button><br></div></div>\
                         ';
                 }
+
                 else {
                   var post = '\
                       <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+username+':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
@@ -401,34 +402,35 @@ function createPost(username,class_tag, data, post_id, comment_id,likes, user_ty
 
             else{
               var comments = '';
+              console.log("THIS:"+username);
               if (user_type == 'prof' || user_type == 'developer') {
                 var post = '\
                     <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post"><p style="color:red;">'+username+':</p></div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
                      <div id="'+comment_id+'" class="comment_box">\
                       <div class="comment_output" >';
-                      for(var i = 0; i <messages.length; i++)
-                      {
-                        comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment" style="color:red;">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
-                      }
               }
               else {
                 var post = '\
                     <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+username+':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
                      <div id="'+comment_id+'" class="comment_box">\
                       <div class="comment_output" >';
-                      for(var i = 0; i <messages.length; i++)
-                      {
-                        comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
-                      }
-
               }
+
+              for(var i = 0; i <messages.length; i++)
+              {
+                if (messages[i].type == 'prof' || messages[i].type == 'developer') {
+                comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment" style="color:red;">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
+                }
+                else {
+                  comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
+                }
+              }
+
                post = post+comments+'</div> <input class="comment_input" type="text" placeholder="comment here..."><button class=comment_button>Comment</button><br></div></div>';
 
                callback(post);
             }
-
            });
-
 }
 
 router.get('/DEVELOPER', isLoggedIn, function (req, res) {
