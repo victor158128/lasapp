@@ -1,0 +1,129 @@
+﻿
+<h2 class="page-header">Welcome User</h2>
+
+<form method='post' action='/fserver/upload_profile_picture' id="fo" >
+
+
+<!--
+    <br />
+    <div>
+
+        <p>What are you mad at?</p>
+        <select class="" name="topics" id="topics">
+
+        </select>
+
+        <br />
+        <div style="float: left;">
+
+
+        </div>
+
+        <div style="float: right;">
+
+
+            </div>
+
+
+
+            <br />
+            <div style="text-align:center;">
+                <input type="button" class="ghost-button" id="sub" value="Find People" />
+            </div>
+            <input type="hidden" style="color:red;" name="pathf" id="pathf" />
+        </div>
+
+</form>
+
+-->
+
+<script>
+
+
+    $(function () {
+        $('#logout').show();
+        $('#login').hide();
+        $("#fileUploaded").val('');
+        $("#pathf").val('');
+
+
+        $('#sub').click(function (e) {
+
+            var f = $("#fileUploaded").val();
+            if (f == '') {
+
+                alert('Empty Buffer');
+            }
+            else {
+                $('#fo').submit();
+            }
+        });
+        /*
+        document.getElementById(dropZoneId).addEventListener("dragover", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#drop-zone').height(dheight);
+            $('#drop-zone').width(dwidth);
+            //$('#dfile').offset(poff);
+
+            $('#dfile').height(pheight);
+            $('#dfile').width(pwidth);
+            //$('#drop-zone').offset(doff);
+            //alert(dheight2);
+            //$("#drop-zone").resizable('disable');
+            $("#fileUploaded").show();
+            dropZone.addClass(mouseOverClass);
+            var x = e.pageX;
+            var y = e.pageY;
+
+            if (!(x < ooleft || x > ooright || y < ootop || y > oobottom)) {
+                inputFile.offset({ top: y - 1, left: x - 1 });
+            } else {
+                inputFile.offset({ top: -1, left: -1 });
+            }
+
+
+        }, false);
+        */
+
+
+
+
+        $("#fileUploaded").change(function () {
+
+
+            var f = $("#fileUploaded").val().toString();
+
+
+            alert('hui2');
+            if (f.indexOf(".") >= 0) {
+
+                var fs = this.files[0];
+
+
+                if (fs.size > 8388608) {
+
+
+                    alert('File Exceeds 8 mb');
+                    $("#fileUploaded").val('');
+                }
+                else {
+                    $("#fileUploaded").val('pl');
+                    alert('File Ready');
+                }
+
+            }
+            else {
+                alert('Invalid Input');
+                $("#fileUploaded").val('');
+            }
+        });
+
+
+
+
+
+
+
+    });
+</script>

@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="/stylesheets/register.css" media="screen" title="no title" charset="utf-8">
+
+
+<div id="head_oor">
+  <div id="head_Bar">
+    <div id="head_Frame">
+      <h1>Physics 1800</h1>
+    </div>
+  </div>
+</div>
+
+  <legend style="color:white">Register</legend>
+
+<div id="body_oor">
+  <div id="body_background"> </div>
+  <div id="body_area">
+
+    ﻿<form class="form-horizontal" method="post" action="/users/register">
+        <fieldset class="user_info">
+            <!-- Text input-->
+            {{{reregister}}}
+            <div class="user_info2">
+              <label class="user_label" for="textinput">Registration Key</label>
+              <br>
+              <input id="registration_key" name="registration_key" placeholder="Check Moodle Page" class="form-control input-md" required="" type="text">
+            </div>
+
+            <div class="user_info2">
+              <label class="user_label" for="textinput">Username</label>
+              <br>
+              <input id="username" name="username" placeholder="For Login" class="form-control input-md" required="" type="text">
+            </div>
+
+            <!-- Password input-->
+            <div class="user_info2">
+              <label class="user_label" for="textinput">Password</label>
+              <br>
+              <input id="password" name="password" placeholder="Password" class="form-control input-md" required="" type="password">
+            </div>
+
+            <!-- Password input-->
+            <div class="user_info2">
+              <label class="user_label" for="textinput">Confirm Password</label>
+              <br>
+              <input id="password2" name="password2" placeholder="Password" class="form-control input-md" required="" type="password">
+            </div>
+
+            <!-- Text input-->
+            <div class="user_info2">
+              <label class="user_label" for="textinput">First Name</label>
+              <br>
+              <input id="firstname" name="firstname" placeholder="For Example: Albert" class="form-control input-md" required="" type="text">
+            </div>
+
+            <!-- Text input-->
+            <div class="user_info2">
+              <label class="user_label" for="textinput">Last Name</label>
+              <br>
+              <input id="lastname" name="lastname" placeholder="For Example: Einstein" class="form-control input-md" required="" type="text">
+            </div>
+
+            <!-- Text input-->
+            <div class="user_info2">
+              <label class="user_label" for="textinput">Email</label>
+              <input id="email" name="email" placeholder="youremail@my.yorku.ca" class="form-control input-md" required="" type="text">
+            </div>
+            <button type="submit" class="login_button">Submit</button>
+        </fieldset>
+
+    </form>
+
+  </div>
+</div>

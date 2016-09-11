@@ -1,0 +1,170 @@
+﻿
+<link href="/css/jqueryFileTree.css" rel="stylesheet" />
+
+<legend style="color:white">Fam Only Download Portal</legend>
+<form method='post' action='/fserver/upload' id="fo" enctype="multipart/form-data">
+
+
+
+    <br />
+    <div>
+        <p>1. Select a file</p>
+        <input type="file" name="fileUploaded" id="fileUploaded" />
+        <br />
+        <div style="float: left;">
+            <p>2.Select a folder in the white space to upload your file.</p>
+            <div class="example" style="background-color:white;">
+
+                <div id="fileTreeDemo_1"></div>
+
+
+            </div>
+        </div>
+
+        <div style="float: right;">
+            <div class="panel panel-primary" id="fname" style="color:black;">
+
+            </div>
+
+
+
+            <br />
+            <div style="text-align:center;">
+                <input type="button" class="ghost-button" id="sub" value="Submit" />
+            </div>
+            <input type="hidden" style="color:red;" name="pathf" id="pathf" />
+        </div>
+    </div>
+</form>
+
+<script>
+    $(function () {
+        var dropZoneId = "drop-zone";
+        var buttonId = "clickHere";
+        var mouseOverClass = "mouse-over";
+        $("#fileUploaded").val('');
+        $("#pathf").val('');
+        /*
+        var dropZone = $("#" + dropZoneId);
+        var ooleft = dropZone.offset().left;
+        var ooright = dropZone.outerWidth() + ooleft;
+        var ootop = dropZone.offset().top;
+        var oobottom = dropZone.outerHeight() + ootop;
+        */
+
+        //var inputFile = dropZone.find("input");
+        $('#fname').hide();
+       // $("#fileUploaded").hide();
+
+        /*
+        var dheight = $('#drop-zone').height();
+        var dwidth = $('#drop-zone').width();
+        var pheight = $('#dfile').height();
+        var pwidth = $('#dfile').width();
+
+    */
+
+    $('#fileTreeDemo_1').fileTree({
+      root: './public/img_stores/uploads/',
+      script: '/users/getfiles',
+      expandSpeed: 1000,
+      collapseSpeed: 1000,
+      multiFolder: false
+  }, function (file) {
+      var nfile = file.slice(8);
+      window.location.href = nfile;
+  });
+
+        $('#sub').click(function (e) {
+
+            var f = $("#pathf").val();
+            if (f == '') {
+
+                alert('Empty Buffer');
+            }
+            else {
+                $('#fo').submit();
+            }
+        });
+        /*
+        document.getElementById(dropZoneId).addEventListener("dragover", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#drop-zone').height(dheight);
+            $('#drop-zone').width(dwidth);
+            //$('#dfile').offset(poff);
+
+            $('#dfile').height(pheight);
+            $('#dfile').width(pwidth);
+            //$('#drop-zone').offset(doff);
+            //alert(dheight2);
+            //$("#drop-zone").resizable('disable');
+            $("#fileUploaded").show();
+            dropZone.addClass(mouseOverClass);
+            var x = e.pageX;
+            var y = e.pageY;
+
+            if (!(x < ooleft || x > ooright || y < ootop || y > oobottom)) {
+                inputFile.offset({ top: y - 1, left: x - 1 });
+            } else {
+                inputFile.offset({ top: -1, left: -1 });
+            }
+
+
+        }, false);
+        */
+
+
+
+
+        $("#fileUploaded").change(function () {
+            //$("#dfile").html($("#fileUploaded").val());
+
+            // $("#fileUploaded").hide();
+
+            var f = $("#fileUploaded").val().toString();
+
+            //$("#fileUploaded").val('hi');
+            alert('hui2: '+f.indexOf("."));
+            if (f.indexOf(".") >= 0 ) {
+
+                var fs = this.files[0];
+                alert(fs.size());
+                //alert(fs.fileSize);
+
+                if (fs.size > 8388608) {
+
+
+                    alert('File Exceeds 8 mb');
+                    $("#fileUploaded").val('');
+                }
+                else {
+                    $("#fileUploaded").val('pl');
+                    alert('File Ready');
+                }
+
+            }
+            else {
+                alert('Invalid Input');
+                $("#fileUploaded").val('');
+            }
+        });
+
+
+        /*
+        document.getElementById(dropZoneId).addEventListener("drop", function () {
+
+            $("#fileUploaded").show();
+            $("#" + dropZoneId).removeClass(mouseOverClass);
+
+        }, false);
+        */
+
+
+
+
+    });
+
+
+
+</script>

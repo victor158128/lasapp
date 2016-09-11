@@ -1,0 +1,44 @@
+<form method='post' action='/users/setandgo' id="fo" >
+
+
+
+    <br />
+    <div>
+
+        <p>What are you mad at?</p>
+        <select style="color:black" name="topics" id="topics">
+          {{{select}}}
+        </select>
+
+        <br />
+        <div style="float: left;">
+
+
+        </div>
+
+        <div style="float: right;">
+
+
+            </div>
+
+
+
+            <br />
+            <div style="text-align:center;">
+
+            </div>
+            <input type="hidden" style="color:red;" name="pathf" id="pathf" />
+        </div>
+
+</form>
+
+  <input type="button" class="ghost-button" id="sub" value="Find People" />
+
+<script type="text/javascript">
+//alert('hel;;');
+$('#sub').click(function(event) {
+$('#fo').submit();
+
+
+});
+</script>

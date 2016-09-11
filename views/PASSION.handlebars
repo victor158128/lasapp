@@ -1,0 +1,252 @@
+
+  <link rel="stylesheet" href="/stylesheets/PASSION.css" media="screen" title="no title" charset="utf-8">
+
+  {{{anon_input}}}
+	{{{user_input}}}
+  {{{profile_input}}}
+
+
+  <div id="head_oor">
+    <div id="head_Bar">
+      <div id="head_Frame">
+        <h1>Welcome to Passion Project</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification">
+    <div class="left_notification">
+      <!--<a class="users">1000</a>-->
+      <span class="Yippee"> Hello </span>
+      <span id="profile_name" > <span class="Yippee"> {{{pname}}}</span> </span>
+      <span class="Yippee">, There are </span>
+      <a id="count"  class="users">0</a>
+      <span class="Yippee"> user(s) online. </span>
+    </div>
+
+    <div class="right_notification">
+      <span class="online_staff"> Online Staff:</span>
+      <select>
+        <option class="physics"> Professor</option>
+        <option class="advisor"> Advisor</option>
+        <option class="project"> Project</option>
+        <option class="developer"> Developer</option>
+      </select>
+      <button type="button" class="private_button">Private</button>
+    </div>
+    <div class="change_page">
+      <form method="get" action="/users/logout"  style="display: inline;">
+          <button type="submit" class="show_all_button">LOG OUT</button>
+      </form>
+      <button  class="show_all_button">Q s</button>
+      <button  class="show_all_button">P s</button>
+    </div>
+  </div>
+
+
+
+
+  <div id="body_oor">
+    <div id="body_background"> </div>
+
+    <div id="right_area">
+      <span class="search_box">Search Box</span>
+        <input class="search_input" placeholder="type a term to search" type="text">
+        <input type="button" class="search_button" value="Search">
+      <span class="description">Description</span>
+        <textarea rows="4" cols="30" placeholder="Describe group here..." class="description_input"></textarea>
+				<button class="edit_button" type="submit">Edit</button>
+				<button  class="save_description" id="PASSION" type="submit">Save</button>
+      <span class="list_of_groups">List of Groups</span>
+      <div class="list_of_groups_common">
+        <form action="/users/PHYS1800" method="get">
+          <button type="submit" id="change_page" class="PHYS1800">PHYS1800</button>
+        </form>
+        <form action="/users/WELCOME" method="get">
+          <button type="submit" id="change_page" class="WELCOME_CENTRE">Welcome Centre</button>
+        </form>
+        <form action="/users/PASSION" method="get">
+          <button type="submit" id="change_page" class="PASSION">Passion Project</button>
+        </form>
+        <form action="/users/DEVELOPER" method="get">
+          <button type="submit" id="change_page" class="DEVELOPER">Developer</button>
+        </form>
+        <form action="/users/homepage2" method="get">
+          <button type="submit" id="change_page" class="homepage2">Homepage</button>
+        </form>
+      </div>
+    </div>
+
+
+
+
+    <div id="left_area">
+      <div class="option_panel">
+
+        <button type="button" class="write_post" >Write Something</button>
+
+        <label for="message_data" class="write_post_mask"> . </label>
+
+        <button type="button" class="write_post" id="create_poll" data-toggle="modal" data-target="#exampleModal1">Create Poll</button>
+
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+<fieldset>
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="exampleModalLabel">Create a new poll</h4>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Text input-->
+                    <div class="control-group">
+                      <label class="control-label" for="question">Question:</label>
+                      <div class="controls">
+                        <textarea id="question" name="question" type="text" placeholder="eg. What day is it?" class="input"> </textarea>
+
+                    <!-- Answer Types-->
+                  <!--  <label>Answer Type:</label>
+                    <select name="answertype">
+                        <option value="">Select:</option>
+                        <option value="list">List</option>
+                        <option value="number">Nubmer</option>
+                        <option value="date">Date</option>
+                        <option value="text">Text</option>
+                    </select>   -->
+
+                      </div>
+                    </div>
+
+                    <!-- List Answer-->
+                    <div id="listanswer" for-field="answertype" for-value="list" class="accordion-body collapse">
+                     <!-- Text input-->
+
+                        <div action="#" method="post" id="sign-up_area">
+                                <div id="entry1" class="clonedInput">
+                                    <h4 id="reference" name="reference" class="heading-reference">Option 1</h4>
+
+                                    <fieldset>
+                                        <label class="label_answeroption" for="first_name">Answer Option: </label>
+                                        <input class="input_answeroption" type="text" name="answer_option" id="first_name" value="">
+                                    </fieldset>
+
+                                </div><!-- end #entry1 -->
+
+                      			       <hr>
+
+                                <div id="addDelButtons">
+                                    <input type="button" id="btnAdd" value="add section"> <input type="button" id="btnDel" value="remove section above">
+                                </div>
+
+                              </div>
+
+                    </div>
+
+                     <!-- Number Answer-->
+                    <div id="numberanswer" for-field="answertype" for-value="number" class="accordion-body collapse">                <!-- Text input-->
+                        <div class="control-group">
+                          <label class="control-label" for="textinput">Number:</label>
+                          <div class="controls">
+                            <input id="textinput" name="textinput" type="text" placeholder="placeholder" class="input">
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- Date Answer-->
+                    <div id="dateanswer" for-field="answertype" for-value="date" class="accordion-body collapse">                    <!-- Text input-->
+                        <div class="control-group">
+                          <label class="control-label" for="textinput">Date:</label>
+                          <div class="controls">
+                            <input id="textinput" name="textinput" type="text" placeholder="placeholder" class="input">
+                          </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Answer-->
+                    <div id="textanswer" for-field="answertype" for-value="text" class="accordion-body collapse">                    <!-- Text input-->
+                        <div class="control-group">
+                          <label class="control-label" for="textinput">Text:</label>
+                          <div class="controls">
+                            <input id="textinput" name="textinput" type="text" placeholder="placeholder" class="input">
+                          </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" id="close_poll" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" id="submit_poll" class="btn btn-primary">Submit</button>
+                </div>
+</fieldset>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+        <textarea rows="auto" cols="30" placeholder="post something here..." id="message_data"></textarea>
+
+        <div class="post_panel">
+          <button type="button" class="add_a_picture" data-toggle="modal" data-target="#exampleModal2" >Add A Picture</button>
+
+          <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+<fieldset>
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="exampleModalLabel2">Choose a picture from local drive</h4>
+                </div>
+
+                <div class="modal-body">
+									<!--<form method='post' action='/fserver/upload' id="fo" enctype="multipart/form-data">-->
+                  <textarea rows="auto" cols="30" placeholder="add a description here..." class="pic_desc"></textarea>
+                  <form id="data">
+									<label class="control-label"> file </label>
+									<input type="file" name="fileUploaded" id="fileUploaded" />
+									<input type="text" style="color:red;" name="pathf" id="pathf" hidden/>
+									</form>
+									<!--
+                  <input id="input-7" name="input7[]" multiple type="file" class="file file-loading" data-allowed-file-extensions='["jpg","png","gif","tiff","bmp"]'>
+								-->
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" id="pic_close" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" id="pic_sub">Submit</button>
+                </div>
+</fieldset>
+
+              </div>
+            </div>
+          </div>
+          <!-- Rectangular switch -->
+            <span class=toogle_text>Anon Switch</span>
+
+            <label class="switch">
+              <input type="checkbox">
+              <div class="slider"></div>
+            </label>
+
+           <input type="button" class="post_button" value="Post">
+        </div>
+
+        <div id="conversation" readonly>
+        {{{messages}}}
+				</div>
+
+			<!--	<div class="comment_output" readonly></div>  -->
+		<!--		<div class="butt_div">
+					<div id="post_id">
+						<div id="comment_id">
+
+						</div>
+					</div>
+				</div>   -->
+
+     </div>
+
+  </div>
