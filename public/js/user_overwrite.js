@@ -9,19 +9,6 @@ $(document).ready(function() {
     hashchanged();
   //}
 
-/*
-$('#main').on('bind', '.progress-bar', function() {
-  alert('hi');
-  hashchanged();
-});
-$("#conversation").bind(".progress-bar", function() {
-    alert("tree changed");
-});
-*/
-
-
-//$('#conversation').change(function(event) {
-//});
 
 
 function hashchanged(){

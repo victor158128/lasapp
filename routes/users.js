@@ -18,35 +18,27 @@ var anon_users = 0;
 var selects = [];
 selects.push('<option value="Physics">'+'Physics'+'</option>');
 
+var User_ = require('../models/user');
 var class_ = require('../models/class');
 var message_ = require('../models/message');
 var keys_ = require('../models/keys');
 
-/*
-var Topic = require('../models/topic');
 
-Topic.find({}, function(err, topics) {
-
-  for(var i = 0; i <topics.length; i++) {
-    console.log(topics[i].topic);
-    //rooms.push(topics[i].topic);
-    selects.push('<option value="'+topics[i].topic+'">'+topics[i].topic+'</option>');
-  }
-  });
-*/
 router.post('/findentry', function(req, res) {
-  console.log(req.body.kw);
+  //console.log("FINDENTRY:"+req.body.kw);
   message_.find({"key":{ "$regex": req.body.kw, "$options": "i" }}, function(err, messages) {
-
+    console.log("KW:"+req.body.kw);
+    console.log("KEY::"+messages);
     var arr = [];
 
     for (var i = 0;i<messages.length;i++){
       //arr.push( '<div style="display: none;" id="'+messages[i].postid+'">'+messages[i].key.substring(0,20)+ '</div>');
       var isolated_key = messages[i].key.split(',')[0];
+      //console.log("ISO KEY:"+isolated_key);
       arr.push ('{"pid":"'+messages[i].postid+'","key":"'+isolated_key.substring(0,20)+'"}');
 
-
     }
+
     var json_entries = '{"ent":['+arr.toString()+']}';
     //console.log(arr.toString());
     //var html = parseHTML(arr);
@@ -289,17 +281,17 @@ function getPosts(room,callback){
 
   message_.find({"class": { $ne: "whole_comment" },"room":room})
        .sort({'updatedAt': 'desc'})
+
        .exec(function(err,messages) {
-         var acc = '';
+          var acc = '';
          var i =0;
-           //for(var i = 0; i <messages.length; i++) {
-           //console.log(messages[i]);
            if(messages ==""){
              callback("");
            }
            else{
+             console.log("OWNER TYPE:"+messages[i].owner);
            (function getmessages(i) {
-          createPost(messages[i].owner,messages[i].class, messages[i].message,messages[i].postid, messages[i].replyid,messages[i].likes,function(post){
+          createPost(messages[i].owner,messages[i].class, messages[i].message,messages[i].postid, messages[i].replyid,messages[i].likes,messages[i].type,function(post){
             acc=acc+post;
             console.log("trying "+i);
 
@@ -317,9 +309,6 @@ function getPosts(room,callback){
 
         })(i);
       }
-
-          // }
-
        });
 }
 
@@ -328,21 +317,17 @@ function getOnePost(pid,room,callback){
   //console.log("room "+room);
   //console.log("pid " +pid);
   message_.findOne({"class": { $ne: "whole_comment" },"room":room,"postid":pid},function(err,message) {
-
+      //console.log("OWNER:"+message.owner);
             if(message ==""){
              callback("");
            }
            else{
             createPost(message.owner,message.class, message.message,message.postid, message.replyid,message.likes,function(post){
-              console.log(post);
+              //console.log(post);
                  callback(post);
            });
 
-
        }
-
-
-
 
        });
 }
@@ -385,35 +370,58 @@ function searchPosts(keyword, room,callback){
        });
 }
 
-function createPost(username,class_tag, data, post_id, comment_id,likes, callback){
+function createPost(username,class_tag, data, post_id, comment_id,likes, user_type, callback){
+  //console.log("USER: "+username);
 
       message_.find({"class":  "whole_comment","replyid":comment_id})
            .sort({'updatedAt': 'desc'})
            .exec(function(err,messages) {
 
-              if(messages ==""){
-                //console.log("NOTHING");
-
-                   var post = '\
-                       <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+ username + ':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
-                        <div id="'+comment_id+'" class="comment_box">\
-                         <div class="comment_output" >\
-</div> <input class="comment_input" type="text" placeholder="comment here...">\
-<button class=comment_button>Comment</button><br></div></div>\
-                         ';
-                         callback(post);
-            }
-            else{
-                //console.log("SOMETHING");
-              var comments = '';
-              var post = '\
-                  <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+ username + ':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
-                   <div id="'+comment_id+'" class="comment_box">\
-                    <div class="comment_output" >';
-                for(var i = 0; i <messages.length; i++)
-                {
-                  comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
+              if(messages =="") {
+                if (user_type == 'prof' || user_type == 'developer') {
+                  var post = '\
+                      <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post"><p style="color:red;">'+username+':</p></div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
+                       <div id="'+comment_id+'" class="comment_box">\
+                        <div class="comment_output" >\
+                         </div> <input class="comment_input" type="text" placeholder="comment here...">\
+                         <button class=comment_button>Comment</button><br></div></div>\
+                        ';
                 }
+                else {
+                  var post = '\
+                      <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+username+':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
+                       <div id="'+comment_id+'" class="comment_box">\
+                        <div class="comment_output" >\
+                         </div> <input class="comment_input" type="text" placeholder="comment here...">\
+                         <button class=comment_button>Comment</button><br></div></div>\
+                        ';
+                }
+                callback(post);
+            }
+
+            else{
+              var comments = '';
+              if (user_type == 'prof' || user_type == 'developer') {
+                var post = '\
+                    <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post"><p style="color:red;">'+username+':</p></div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
+                     <div id="'+comment_id+'" class="comment_box">\
+                      <div class="comment_output" >';
+                      for(var i = 0; i <messages.length; i++)
+                      {
+                        comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment" style="color:red;">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
+                      }
+              }
+              else {
+                var post = '\
+                    <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+username+':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+likes+'</span></div>  </div>\
+                     <div id="'+comment_id+'" class="comment_box">\
+                      <div class="comment_output" >';
+                      for(var i = 0; i <messages.length; i++)
+                      {
+                        comments= comments+'<div class="whole_comment" id="'+messages[i].options+'"><span class="user_comment">'+ messages[i].owner + '</span>: <span class="just_comment">' + messages[i].message + '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">'+messages[i].likes+'</span></span></span></div>';
+                      }
+
+              }
                post = post+comments+'</div> <input class="comment_input" type="text" placeholder="comment here..."><button class=comment_button>Comment</button><br></div></div>';
 
                callback(post);
@@ -423,10 +431,39 @@ function createPost(username,class_tag, data, post_id, comment_id,likes, callbac
 
 }
 
+router.get('/DEVELOPER', isLoggedIn, function (req, res) {
+
+  User.getUserById(req.cookies.userid, function(err, user) {
+
+    if (user == null) {
+      res.clearCookie('userid');
+      res.clearCookie('username');
+        res.redirect('/users/login');
+    }
+    else {
+      if (user.type == 'developer') {
+        getPosts("DEVELOPER",function(stuff){
+
+        //console.log("PRIVILEGE:"+ user.type);
+         res.render('DEVELOPER', {desave:'<button class="edit_button" type="submit">Edit</button><button  class="save_description" id="DEVELOPER" type="submit">Save</button>',messages:stuff,pname:user.fname+' '+user.lname,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
+       });
+      }
+      else {
+        //console.log(getPosts());
+        getPosts("DEVELOPER",function(stuff){
+        //console.log(stuff);
+         res.render('DEVELOPER', {messages:stuff,pname:user.fname+' '+user.lname,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
+
+       });
+     }
+   }
+ });
+});
+
+
 router.get('/PHYS1800', isLoggedIn, function (req, res) {
 
   User.getUserById(req.cookies.userid, function(err, user) {
-      console.log("GET IN PAGE:"+user);
 
     if (user == null) {
       res.clearCookie('userid');
@@ -435,79 +472,42 @@ router.get('/PHYS1800', isLoggedIn, function (req, res) {
     }
     else {
 
-    if (user.type == 'prof') {
+    if (user.type == 'prof' || user.type == 'developer') {
       getPosts("PHYS1800",function(stuff){
 
       //console.log("PRIVILEGE:"+ user.type);
-       res.render('PHYS1800', {desave:'<button class="edit_button" type="submit">Edit</button><button  class="save_description" id="PHYS1800" type="submit">Save</button>',messages:stuff,pname:req.cookies.username,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
+       res.render('PHYS1800', {desave:'<button class="edit_button" type="submit">Edit</button><button  class="save_description" id="PHYS1800" type="submit">Save</button>',messages:stuff,pname:user.fname+' '+user.lname,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
      });
     }
     else if (user.type == 'student') {
       //console.log(getPosts());
       getPosts("PHYS1800",function(stuff){
-      //console.log(stuff);
-       res.render('PHYS1800', {messages:stuff,pname:req.cookies.username,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
+
+       res.render('PHYS1800', {messages:stuff,pname:user.fname+' '+user.lname,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
 
      });
    }
  }
-  })
+  });
 });
 
 
 router.post('/singlem', isLoggedIn, function (req, res) {
-  //console.log("");
+  console.log(">>>"+req.body.location);
   getOnePost(req.body.pid, req.body.location, function(stuff){
     res.send(stuff);
+    console.log("STUFF:"+stuff);
   });
 
 });
 
 router.post('/multiplem', isLoggedIn, function (req, res) {
   //console.log("");
-
+  //console.log("<<<"+req.body.kw);
    searchPosts(req.body.kw,req.body.location, function(stuff){
     res.send(stuff);
   });
 
-});
-
-/*
-router.get('/WElCOME', isLoggedIn, function (req, res) {
-
-  User.getUserById(req.cookies.userid, function(err, user) {
-    //console.log(getPosts());
-    getPosts("WElCOME",function(stuff){
-    console.log(stuff);
-    res.render('WElCOME', {messages:stuff,pname:req.cookies.username,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
-});
-
-})
-});
-
-router.get('/PASSION', isLoggedIn, function (req, res) {
-
-  User.getUserById(req.cookies.userid, function(err, user) {
-    //console.log(getPosts());
-    getPosts("PASSION",function(stuff){
-    console.log(stuff);
-    res.render('PASSION', {messages:stuff,pname:req.cookies.username,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
-});
-
-})
-});
-*/
-
-router.get('/DEVELOPER', isLoggedIn, function (req, res) {
-
-  User.getUserById(req.cookies.userid, function(err, user) {
-    //console.log(getPosts());
-    getPosts("DEVELOPER",function(stuff){
-    console.log(stuff);
-    res.render('DEVELOPER', {desave:'<button  class="save_description" id="DEVELOPER" type="submit">Save</button>',messages:stuff,pname:req.cookies.username,profile_input:'<input type="hidden" id="profile" value="'+user.username+'">',anon_input:'<input type="hidden" id="anon" value="'+user.aname+'">',user_input:'<input type="hidden" id="fname" value="'+user.fname+'">'});
-});
-
-})
 });
 
 

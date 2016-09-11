@@ -128,22 +128,6 @@ router.post('/upload_profile_picture', function (req, res, next) {
 
             });
         });
-        //console.log(req.user._id);
-        // Connect to the db
-        /*
-        MongoClient.connect("mongodb://localhost:27017/geofam", function (err, db) {
-            if (err) { return console.dir(err); }
-
-            db.collection('users', function (error, collection) {
-                //collection.find({_id:justId}),function(err, docs) { // <== This will not work
-                collection.findOne({ _id: req.user._id}, function (err, docs) {
-                    console.log("Printing docs from Array. count " + JSON.stringify(docs));
-                });
-            });
-
-
-        });
-        */
 
 
     });

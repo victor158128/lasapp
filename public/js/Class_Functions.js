@@ -28,11 +28,11 @@ $(document).ready(function() {
     select: function (event, ui) {
       //console.log(($.inArray(ui.item.value, keys)));
       var ind = $.inArray(ui.item.value, keys);
+
       $.post( "singlem",{"pid":ids[ind],"location":window.location.pathname.split('/').pop()},function(data) {
       $("#conversation").html(data);
         hashchanged();
       });
-
     }
   });
 
@@ -40,6 +40,7 @@ $(document).ready(function() {
 
     $.post( "multiplem",{"kw":$(".search_input").val(),"location":window.location.pathname.split('/').pop()},function(data) {
     $("#conversation").html(data);
+
       hashchanged();
     });
 

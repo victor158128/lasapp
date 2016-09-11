@@ -54,8 +54,6 @@ $(function () {
 
     $('#btnDel').click(function () {
     // confirmation
-        if (confirm("Are you sure you wish to remove this section? This cannot be undone."))
-            {
                 var num = $('.clonedInput').length;
                 // how many "duplicatable" input fields we currently have
                 $('#entry' + num).slideUp('slow', function () {$(this).remove();
@@ -64,8 +62,7 @@ $(function () {
                 $('#btnDel').attr('disabled', true);
                 // enable the "add" button
                 $('#btnAdd').attr('disabled', false).prop('value', "add section");});
-            }
-        return false;
+
              // remove the last element
 
     // enable the "add" button

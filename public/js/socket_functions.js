@@ -58,21 +58,40 @@ $('#main').on('click', '#change_page', function () {
 
 });
 
-socket.on('updatecomment', function (username, comment, comment_id,c_id) {
-  $('#'+comment_id).children(".comment_output").prepend('<div id="'+c_id+'" class="whole_comment"><span class="user_comment">'+ username + '</span>: <span class="just_comment">' + comment +
-  '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></span></div></span></div>');
+socket.on('updatecomment', function (username, comment, comment_id,c_id,user_type) {
+  if  (user_type == 'prof' || user_type == 'developer') {
+    $('#'+comment_id).children(".comment_output").prepend('<div id="'+c_id+'" class="whole_comment"><span class="user_comment" style="color:red;">'+ username + '</span>: <span class="just_comment">' + comment +
+    '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></span></div></span></div>');
+  }
+  else {
+    $('#'+comment_id).children(".comment_output").prepend('<div id="'+c_id+'" class="whole_comment"><span class="user_comment">'+ username + '</span>: <span class="just_comment">' + comment +
+    '<span class="like_area" style="float:right;"><a class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></span></div></span></div>');
+  }
 });
 
-socket.on('updatechat', function (username,class_tag, data,counter, post_id, comment_id) {
 
-$('#conversation').prepend('\
-<div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+ username + ':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></div>  </div>\
- <div id="'+comment_id+'" class="comment_box">\
-      <div class="comment_output" ></div>\
-      <input class="comment_input" type="text" placeholder="comment here...">\
-       <button class=comment_button>Comment</button> <br>\
-    </div>\
-  </div>' );
+// listener, whenever the server emits 'updatechat', this updates the chat body
+socket.on('updatechat', function (username,class_tag, data,counter, post_id, comment_id, user_type) {
+  if (user_type == 'prof' || user_type == 'developer') {
+    $('#conversation').prepend('\
+    <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post"><p style="color:red;">'+username+':</p></div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></div>  </div>\
+     <div id="'+comment_id+'" class="comment_box">\
+          <div class="comment_output" ></div>\
+          <input class="comment_input" type="text" placeholder="comment here...">\
+           <button class=comment_button>Comment</button> <br>\
+        </div>\
+      </div>' );
+  }
+  else {
+    $('#conversation').prepend('\
+    <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+ username + ':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></div>  </div>\
+     <div id="'+comment_id+'" class="comment_box">\
+          <div class="comment_output" ></div>\
+          <input class="comment_input" type="text" placeholder="comment here...">\
+           <button class=comment_button>Comment</button> <br>\
+        </div>\
+      </div>' );
+  }
 });
 
 $('#main').on('click', '.delete_button', function () {
@@ -86,10 +105,8 @@ socket.on ('deletepost', function(pid) {
   $('#'+pid).remove();
 });
 
-// listener, whenever the server emits 'updatechat', this updates the chat body
+/*
 socket.on('updatechat', function (username,class_tag, data,counter, post_id, comment_id) {
-
-
 $('#conversation').prepend('\
 <div id="'+post_id+'" class="'+class_tag+'"><div class="user_post">'+ username + ':</div><div class=message_body>'+ data + '<div class="like_area" style="float:right;" ><a class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span></a><span class="counter_post">0</span></div>  </div>\
  <div id="'+comment_id+'" class="comment_box">\
@@ -99,7 +116,7 @@ $('#conversation').prepend('\
     </div>\
   </div>' );
 });
-
+*/
 
 socket.on('updatedescription', function (des) {
   $('.description_output').append('<b>'+ des + '<br>');
@@ -258,9 +275,8 @@ function switchRoom(room){
 
   // when the client hits ENTER on their keyboard
   $('.description_input').keypress(function(e) {
-    if(e.which == 13) {
-      $(this).blur();
-      $('.save_button').focus().click();
+    if ((e.ctrlKey || e.metaKey) && (e.which == 13 || e.which == 10)) {
+      $(this).val(  $(this).val() + "\n");
     }
   });
 

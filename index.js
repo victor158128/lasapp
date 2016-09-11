@@ -23,7 +23,11 @@ var express = require('express')
   var mongoimage = require('./routes/mongoimage');
 var databaseloader = require('./routes/databaseloader');
 
-mongoose.connect('mongodb://simon:123456@ds145325.mlab.com:45325/chatapp');
+mongoose.Promise = global.Promise;
+
+mongoose.connect('mongodb://localhost:27017/lasapp');
+
+//mongoose.connect('mongodb://simon:123456s@ds145325.mlab.com:45325/chatapp');
 //mongoose.connect('mongodb://jamiekrcmar:12345@ds017862.mlab.com:17862/madat');
 var class_ = require('./models/class');
 var file_ = require('./models/file');
@@ -118,7 +122,8 @@ user_.findOne({username:socket.username}, function(err,user) {
       options:ops,
       room: socket.room,
         likes:"0",
-        key: key_in+','+socket.username
+        key: key_in+','+user.fname+" "+user.lname,
+        type: user.type
 
   });
   newMessage.save(function (err) {
@@ -131,7 +136,8 @@ user_.findOne({username:socket.username}, function(err,user) {
   });
 
      var d_button = '<button class="delete_button">delete</button>';
-    io.sockets.in(socket.room).emit('updatechat', user.fname+" "+user.lname,sent_class, data,counter,post_id,comment_id);
+
+    io.sockets.in(socket.room).emit('updatechat', user.fname+" "+user.lname,sent_class, data,counter,post_id,comment_id, user.type);
 
   });
 });
@@ -158,7 +164,9 @@ socket.on('deletepost',  function(pid) {
           room: socket.room,
           options:c_id,
           likes:"0",
-          key: key_in+','+socket.username
+          key: key_in+','+user.fname+" "+user.lname,
+          type: user.type
+
       });
       newMessage.save(function (err) {
         if (err) {
@@ -169,52 +177,13 @@ socket.on('deletepost',  function(pid) {
         }
       });
 
-        io.sockets.in(socket.room).emit('updatecomment', user.fname+" "+user.lname,comment, comment_id, c_id);
-      });
-
-  });
-/*
-  socket.on('updatepoll', function (post_uid,chose,operator) {
-      message_.findOne({postid: post_uid}, function(err,obj) {
-        console.log(obj.options.toString());
-      //var data = JSON.stringify(obj.options.toString());
-        //var data = JSON.parse(obj.options); // you missed that...
-  //console.log(data);
-  var data2 = JSON.parse(obj.options);
-  //console.log(chose);
-  console.log(Object.keys(data2));
-  var accumulator = 0;
-  for(var i=0;i<data2.choses.length;i++){
-
-  if(Object.keys(data2.choses[i])[0] ==chose){
-  if(data2.choses[i][chose]>0 || (data2.choses[i][chose]==0&&operator==1) ){
-    console.log("string: "+data2.choses[i][chose]);
-  data2.choses[i][chose] = parseInt(data2.choses[i][chose])+operator;
-  accumulator =  accumulator + parseInt(data2.choses[i][chose]);
-  console.log("Updat ACCUMULATOR: "+accumulator);
-  //console.log(data2.choses[i][chose]);
-
-  message_.findOneAndUpdate({postid: post_uid}, {"options":JSON.stringify(data2)}, function (err, message) {
-    //res.send(place);
-  });
-
-
-  }
-
-  }
-  else{
-    console.log("string: "+data2.choses[i][ Object.keys(data2.choses[i])[0] ]);
-  accumulator =  accumulator + parseInt(data2.choses[i][ Object.keys(data2.choses[i])[0] ]);
-  console.log("Updat ACCUMULATOR: "+accumulator);
-  }
-  }
-  console.log("ACCUMULATOR: "+accumulator);
-  console.log("finished");
+         io.sockets.in(socket.room).emit('updatecomment', user.fname+" "+user.lname,comment, comment_id, c_id,user.type);
 
       });
 
-    });
-*/
+  });
+
+
 socket.on ('updatelike', function(post_uid,operator,post_class){
 
 if(operator ==1 || operator == -1){
@@ -266,61 +235,42 @@ message_.findOneAndUpdate({postid: post_uid},{"likes":iterate} ,{new: true},func
 
 socket.on('updatepoll', function (post_uid,chose,operator,quest) {
 
+  if(operator ==1 || operator == -1){
+
+    message_.findOne({postid: post_uid}, function(err,obj) {
+  var poll_data = JSON.parse(obj.options);
+  //console.log(Object.keys(poll_data.poll_info[0].votes[0]));
+  //console.log(poll_data.poll_info[0].votes.length);
 
 
-if(operator ==1 || operator == -1){
+  for(var i=0;i<poll_data.poll_info[0].votes.length;i++){
+    if(Object.keys(poll_data.poll_info[0].votes[i])[0] ==chose){
+      if(poll_data.poll_info[0].votes[i][chose]>0 || (poll_data.poll_info[0].votes[i][chose]==0&&operator==1) ){
+      var chosed_check = parseInt(poll_data.poll_info[0].votes[i][chose])+operator;
+      poll_data.poll_info[0].votes[i][chose] = chosed_check;
+  message_.findOneAndUpdate({postid: post_uid}, {"options":JSON.stringify(poll_data)},{new: true}, function (err, message) {
+   var data3 = JSON.parse(message.options);
+   var accumulator = 0;
+   var names = [];
+   //console.log(data3);
 
-  message_.findOne({postid: post_uid}, function(err,obj) {
-var poll_data = JSON.parse(obj.options);
-//console.log(Object.keys(poll_data.poll_info[0].votes[0]));
-//console.log(poll_data.poll_info[0].votes.length);
+  for(var x=0;x<data3.poll_info[0].votes.length;x++){
+  accumulator = accumulator+parseInt(data3.poll_info[0].votes[x][ Object.keys(data3.poll_info[0].votes[x])[0] ]);
+  }
+  //console.log(accumulator);
 
-
-for(var i=0;i<poll_data.poll_info[0].votes.length;i++){
-  if(Object.keys(poll_data.poll_info[0].votes[i])[0] ==chose){
-    if(poll_data.poll_info[0].votes[i][chose]>0 || (poll_data.poll_info[0].votes[i][chose]==0&&operator==1) ){
-    var chosed_check = parseInt(poll_data.poll_info[0].votes[i][chose])+operator;
-    poll_data.poll_info[0].votes[i][chose] = chosed_check;
-message_.findOneAndUpdate({postid: post_uid}, {"options":JSON.stringify(poll_data)},{new: true}, function (err, message) {
- var data3 = JSON.parse(message.options);
- var accumulator = 0;
- var names = [];
- //console.log(data3);
-
-for(var x=0;x<data3.poll_info[0].votes.length;x++){
-accumulator = accumulator+parseInt(data3.poll_info[0].votes[x][ Object.keys(data3.poll_info[0].votes[x])[0] ]);
-}
-//console.log(accumulator);
-
-var poll_front = '<span class="question">'+quest+'</span>';
-var checkbox_strings = '';
-var user_stored = '"type":"poll","post":"'+post_uid+'"'
-var html_resovoir='';
-for(var x=0;x<data3.poll_info[0].votes.length;x++){
-var per = (parseInt(data3.poll_info[0].votes[x][ Object.keys(data3.poll_info[0].votes[x])[0] ])/accumulator)*100;
-var vari = Object.keys(data3.poll_info[0].votes[x])[0];
-names.push('{"'+vari+'":"'+per+'"}');
-var number = Math.round(accumulator*per/100);
-if(vari ==chose){
-
-  //console.log("pushing:"+vari);
-    html_resovoir = vari;
-
-checkbox_strings = checkbox_strings + '<div class="checkbox" value="'+vari+'">\
-  <label><input type="checkbox" class="checkbox_class" value="'+vari+'">'+vari+'</label>\
-    <div class="progress">\
-      <div class="progress-bar" role="progressbar" aria-valuenow="70"\
-        aria-valuemin="0" aria-valuemax="100" style="width:'+Math.floor(per)+'%">\
-        '+number+' ('+Math.floor(per)+'%)\
-      </div>\
-    </div>\
-  </div> ';
-}
-
-else{
-
-
-
+  var poll_front = '<span class="question">'+quest+'</span>';
+  var checkbox_strings = '';
+  var user_stored = '"type":"poll","post":"'+post_uid+'"'
+  var html_resovoir='';
+  for(var x=0;x<data3.poll_info[0].votes.length;x++){
+  var per = (parseInt(data3.poll_info[0].votes[x][ Object.keys(data3.poll_info[0].votes[x])[0] ])/accumulator)*100;
+  var vari = Object.keys(data3.poll_info[0].votes[x])[0];
+  names.push('{"'+vari+'":"'+per+'"}');
+  var number = Math.round(accumulator*per/100);
+  if(vari ==chose){
+    //console.log("pushing:"+vari);
+      html_resovoir = vari;
   checkbox_strings = checkbox_strings + '<div class="checkbox" value="'+vari+'">\
     <label><input type="checkbox" class="checkbox_class" value="'+vari+'">'+vari+'</label>\
       <div class="progress">\
@@ -329,35 +279,45 @@ else{
           '+number+' ('+Math.floor(per)+'%)\
         </div>\
       </div>\
-    </div>';
+    </div> ';
+  }
+  else{
+    checkbox_strings = checkbox_strings + '<div class="checkbox" value="'+vari+'">\
+      <label><input type="checkbox" class="checkbox_class" value="'+vari+'">'+vari+'</label>\
+        <div class="progress">\
+          <div class="progress-bar" role="progressbar" aria-valuenow="70"\
+            aria-valuemin="0" aria-valuemax="100" style="width:'+Math.floor(per)+'%">\
+            '+number+' ('+Math.floor(per)+'%)\
+          </div>\
+        </div>\
+      </div>';
+  }
 }
+  storeUserModedHtml(socket.username,"{"+user_stored+',"replacer":"'+html_resovoir +'"}','poll',post_uid,operator,function(finish){
+    var packaged_percentages ='{"percents":['+names+']}'
+    //console.log("finished: "+packaged_percentages);
+    io.sockets.in(socket.room).emit('updatepoll',post_uid,JSON.parse(packaged_percentages), accumulator);
 
-}
-storeUserModedHtml(socket.username,"{"+user_stored+',"replacer":"'+html_resovoir +'"}','poll',post_uid,operator,function(finish){
-  var packaged_percentages ='{"percents":['+names+']}'
-  //console.log("finished: "+packaged_percentages);
-  io.sockets.in(socket.room).emit('updatepoll',post_uid,JSON.parse(packaged_percentages), accumulator);
+    var packaged ='{"poll_info":['+JSON.stringify(data3.poll_info[0])+',{"percents":['+names+']}]}';
+    //console.log( packaged );
+    message_.findOneAndUpdate({postid: post_uid}, {"options":packaged,message:poll_front+checkbox_strings},{new: true}, function (err, message) {
 
-  var packaged ='{"poll_info":['+JSON.stringify(data3.poll_info[0])+',{"percents":['+names+']}]}';
-  //console.log( packaged );
-  message_.findOneAndUpdate({postid: post_uid}, {"options":packaged,message:poll_front+checkbox_strings},{new: true}, function (err, message) {
+      });
+  });
+
+
 
     });
-});
+    }
+
+    }
 
 
-
-  });
   }
 
+    });
+
   }
-
-
-}
-
-  });
-
-}
 
 });
 
