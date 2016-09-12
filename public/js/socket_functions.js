@@ -333,7 +333,7 @@ $("#pic_sub").click(function () {
   var fss = document.getElementById('fileUploaded').files[0];
       //  //alert(fss.size);
 
-        if (fss.size > 1388608) {
+        if (fss.size > 1048576) {
           alert('File Exceeds 1mb. Please resize and upload again.');
          $("#fileUploaded").val('');
         }

@@ -88,7 +88,9 @@ router.post('/upload_profile_picture', function (req, res, next) {
 
         // Retrieve
         var MongoClient = require('mongodb').MongoClient;
-        MongoClient.connect("mongodb://localhost:27017/geofam", function (err, db) {
+        //MongoClient.connect("mongodb://localhost:27017/geofam", function (err, db) {
+        MongoClient.connect("mongodb://ds145325.mlab.com:45325/chatapp", function (err, db) {
+
             db.collection('profile', function (error, collection) {
                 if (err) { return console.dir(err); }
                 //collection.save({ user: req.user._id, img_path: files.fileUploaded.path }, { w: 1 }, callback)
