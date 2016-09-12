@@ -28,7 +28,7 @@ var databaseloader = require('./routes/databaseloader');
 //mongoose.connect('mongodb://localhost:27017/lasapp');
 
 mongoose.connect('mongodb://simon:123456@ds145325.mlab.com:45325/chatapp');
-//mongoose.connect('mongodb://jamiekrcmar:12345@ds017862.mlab.com:17862/madat');
+
 var class_ = require('./models/class');
 var file_ = require('./models/file');
 var message_ = require('./models/message');
@@ -39,7 +39,6 @@ var port = process.env.PORT || 4000;
 http.listen(port, function() {
     console.log('Server running on port ' + port);
 });
-
 
 
 var usernames = {};
