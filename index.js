@@ -25,9 +25,9 @@ var databaseloader = require('./routes/databaseloader');
 
 //mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://localhost:27017/lasapp');
+//mongoose.connect('mongodb://localhost:27017/lasapp');
 
-//mongoose.connect('mongodb://simon:123456@ds145325.mlab.com:45325/chatapp');
+mongoose.connect('mongodb://simon:123456@ds145325.mlab.com:45325/chatapp');
 
 var class_ = require('./models/class');
 var file_ = require('./models/file');

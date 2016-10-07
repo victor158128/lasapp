@@ -67,7 +67,7 @@ var f_count = 0;
                 throw err;
             console.log('renamed complete');
 
-            res.send("http://localhost:4000/img_stores/uploads/Lobby/"+file+f_count+"."+(files.fileUploaded.name).split('.').pop());
+            res.send("https://jk-sl.herokuapp.com/img_stores/uploads/Lobby/"+file+f_count+"."+(files.fileUploaded.name).split('.').pop());
   f_count = f_count + 1;
         });
         //res.end();

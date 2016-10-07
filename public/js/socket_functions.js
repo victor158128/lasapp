@@ -418,7 +418,7 @@ socket.emit('sendchat',
           </div>\
       </div><!-- /.modal-content -->\
     </div><!-- /.modal-dialog -->\
-    </div><!-- /.modal mixer image -->',
+</div><!-- /.modal mixer image -->',
   'post_picture', 0, description);
 
 }
