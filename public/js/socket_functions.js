@@ -409,15 +409,16 @@ socket.emit('sendchat',
 <img  style="margin-bottom:10px;" src="'+data+'" width="150" class="img-responsive img-rounded center-block" alt="">\
 </a>\
 <!--  Modal content for the mixer image example -->\
- m    <div class="modal-dialog modal-lg">\
+<div class="modal fade pop-up-1" id="'+fname.split('.')[0]+'" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel-1" aria-hidden="true">\
+   <div class="modal-dialog modal-lg">\
       <div class="modal-content">\
           <button class="close" data-dismiss="modal"; style="font-size:30px; padding:10px;" aria-hidden="true">×</button>\
-        <div class="modal-body">\
-        <img src="'+data+'" class="img-responsive img-rounded center-block center fit" alt="">\
-        </div>\
+          <div class="modal-body">\
+            <img src="'+data+'" class="img-responsive img-rounded center-block center fit" alt="">\
+          </div>\
       </div><!-- /.modal-content -->\
     </div><!-- /.modal-dialog -->\
-  </div><!-- /.modal mixer image -->',
+    </div><!-- /.modal mixer image -->',
   'post_picture', 0, description);
 
 }
