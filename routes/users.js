@@ -27,8 +27,8 @@ var keys_ = require('../models/keys');
 router.post('/findentry', function(req, res) {
   //console.log("FINDENTRY:"+req.body.kw);
   message_.find({"key":{ "$regex": req.body.kw, "$options": "i" }}, function(err, messages) {
-    console.log("KW:"+req.body.kw);
-    console.log("KEY::"+messages);
+    //console.log("KW:"+req.body.kw);
+    //console.log("KEY::"+messages);
     var arr = [];
 
     for (var i = 0;i<messages.length;i++){
@@ -124,11 +124,8 @@ router.post('/getOverwrite', function (req, res) {
   var getOver = user.htmlmod;
   res.json(getOver)
 
-
       });
   }
-
-
 
 });
 
@@ -157,50 +154,69 @@ router.post('/register', function (req, res) {
     var keys = req.body.registration_key;
 
     keys_.findOne({"_id":keys}, function (err, key){
-      if (key == null){
-        res.render('register',{reregister:'<b>Key is not valid.</b>',layout:'layout2'});
+//      for (var i = 0; i < keys_.length; i++) {
+//        console.log("HAS PROPER:"+key._id+"   "+key);
+//          if (keys == key._id && key.hasOwnProperties("type")) {
+//            res.render('register',{reregister:'<b>This key has been activated.</b>',layout:'layout2'});
+//          }
+//      }
+  console.log("USED BEFORE:"+key.used);
+
+    if (key.used == "yes") {
+      res.render('register',{reregister:'<b>This key is used already.</b>',layout:'layout2'});
+    }
+    else if (key == null){
+        //console.log("HELLO:"+key);
+        res.render('register',{reregister:'<b>This key is not valid.</b>',layout:'layout2'});
       }
       else {
+          User.findOne({"username":username}, function (err, user) {
+            //console.log("USER:"+user);
+             checkEmail(email, function(validation, addresses, err) {
 
-    User.findOne({"username":username}, function (err, user) {
-      console.log(user);
-      checkEmail(email, function(validation, addresses, err) {
+            if (password != password2 ) {
+              res.render('register',{reregister:'<b>Passwords don\'t match. Try again.</b>',layout:'layout2'});
+            }
+            else if (validation != true){
+              res.render('register',{reregister:'<b>Email is not valid.</b>',layout:'layout2'});
+            }
+            else if (user == null) {
+              var fname = req.body.firstname;
+              var lname = req.body.lastname;
+              var newUser = new User({
+                  _id: key._id,
+                  type: key.type,
+                  fname: fname,
+                  lname: lname,
+                  aname: "anon"+anon_users,
+                  email: email,
+                  username: username,
+                  password: password,
+                  htmlmod:'{"modded":[]}',
+                  used: "yes",
+              });
+              anon_users = anon_users+1;
+              keys_.findOneAndUpdate({"_id":keys}, {$set:{used:"yes"}}, {new:true}, function(err, doc) {
+                if (err) {
+                  console.log("something is wrong with updating data");
+                }
+                console.log(doc);
+              });
 
-      if (password != password2 ) {
-        res.render('register',{reregister:'<b>Passwords don\'t match. Try again.</b>',layout:'layout2'});
-      }
-      else if (validation != true){
-        res.render('register',{reregister:'<b>Email is not valid.</b>',layout:'layout2'});
-      }
-      else if (user == null) {
-        var fname = req.body.firstname;
-        var lname = req.body.lastname;
-        var newUser = new User({
-            _id: key._id,
-            type:key.type,
-            fname: fname,
-            lname: lname,
-            aname: "anon"+anon_users,
-            email: email,
-            username: username,
-            password: password,
-            htmlmod:'{"modded":[]}'
+
+              User.createUser(newUser, function (err, user) {
+                  if (err) throw err;
+                  console.log(user);
+              });
+
+              res.redirect('/users/login');
+            }
+            else {
+              res.render('register', {reregister:'<b>Username has been taken. Try another.</b>',layout:'layout2'});
+            }
+          });
+
         });
-        anon_users = anon_users+1;
-
-        User.createUser(newUser, function (err, user) {
-            if (err) throw err;
-            console.log(user);
-        });
-
-        res.redirect('/users/login');
-      }
-      else {
-        res.render('register', {reregister:'<b>Username has been taken. Try another.</b>',layout:'layout2'});
-      }
-    });
-
-  });
     }
 });
 

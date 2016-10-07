@@ -17,10 +17,12 @@ var UserSchema = mongoose.Schema({
         required: true
     },
     fname: {
-      type: String
+      type: String,
+      required: true
     },
     lname: {
-      type: String
+      type: String,
+      required: true
     },
     aname: {
       type: String
@@ -31,8 +33,10 @@ var UserSchema = mongoose.Schema({
     type: {
       type:String
     },
-
     htmlmod: {
+      type: String
+    },
+    used: {
       type: String
     }
 });

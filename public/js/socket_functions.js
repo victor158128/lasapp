@@ -247,7 +247,7 @@ function switchRoom(room){
         //alert(ErrorText);
       }
 */
-    if(e.which == 13 ) {
+    if((e.which == 13 || e.keyCode == 10) && !(e.ctrlKey || e.metaKey) ) {
       $(this).blur();
       $('.post_button').focus().click();
     }
@@ -308,6 +308,9 @@ function switchRoom(room){
 
 
   $("#pathf").val('Lobby');
+
+//  $("#pathf").val('what');
+
 /*
 $('#pic_sub').click(function(event) {
 
@@ -330,11 +333,11 @@ $("#pic_sub").click(function () {
 
     if (f.indexOf(".") >= 0 ) {
 
-  var fss = document.getElementById('fileUploaded').files[0];
+      var fss = document.getElementById('fileUploaded').files[0];
       //  //alert(fss.size);
 
-        if (fss.size > 1048576) {
-          alert('File Exceeds 1mb. Please resize and upload again.');
+        if (fss.size > 2088576) {
+          alert('File Exceeds 2mb. Please resize and upload again.');
          $("#fileUploaded").val('');
         }
         else {
@@ -389,6 +392,7 @@ $('#main').on('keypress', '.pic_desc', function(e) {
   }
 });
 
+
 function appendPicture(data){
   var fname = data.split('/').pop();
   var description = $(".pic_desc").val();
@@ -405,7 +409,7 @@ socket.emit('sendchat',
 <img  style="margin-bottom:10px;" src="'+data+'" width="150" class="img-responsive img-rounded center-block" alt="">\
 </a>\
 <!--  Modal content for the mixer image example -->\
-  <div class="modal fade pop-up-1" id="'+fname.split('.')[0]+'" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel-1" aria-hidden="true">\
+    <div class="modal fade pop-up-1" id="'+fname.split('.')[0]+'" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel-1" aria-hidden="true">\
     <div class="modal-dialog modal-lg">\
       <div class="modal-content">\
           <button class="close" data-dismiss="modal"; style="font-size:30px; padding:10px;" aria-hidden="true">×</button>\

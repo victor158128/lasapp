@@ -25,9 +25,9 @@ var databaseloader = require('./routes/databaseloader');
 
 //mongoose.Promise = global.Promise;
 
-//mongoose.connect('mongodb://localhost:27017/lasapp');
+mongoose.connect('mongodb://localhost:27017/lasapp');
 
-mongoose.connect('mongodb://simon:123456@ds145325.mlab.com:45325/chatapp');
+//mongoose.connect('mongodb://simon:123456@ds145325.mlab.com:45325/chatapp');
 
 var class_ = require('./models/class');
 var file_ = require('./models/file');
@@ -105,40 +105,41 @@ console.log('connected');
   socket.on('sendchat', function (data,sent_class,ops, key_in) {
     // we tell the client to execute 'updatechat' with 2 parameters
 
-user_.findOne({username:socket.username}, function(err,user) {
-    //console.log(">>>"+socket.username);
-//  console.log("<<<"+user);
-//  console.log("NAME: "+user.fname+" "+user.lname);
-  var post_id =generateUUID();
-  var comment_id = generateUUID();
-  //console.log("HHH"+key_in);
-  var newMessage = new message_({
-      postid: post_id,
-      replyid: comment_id,
-      owner:  user.fname+" "+user.lname,
-      message: data,
-      class: sent_class,
-      options:ops,
-      room: socket.room,
-        likes:"0",
-        key: key_in+','+user.fname+" "+user.lname,
-        type: user.type
+    user_.findOne({username:socket.username}, function(err,user) {
+        //console.log(">>>"+socket.username);
+    //  console.log("<<<"+user);
+    //  console.log("NAME: "+user.fname+" "+user.lname);
+      var post_id =generateUUID();
+      var comment_id = generateUUID();
+      //console.log("HHH"+key_in);
+      var newMessage = new message_({
+          postid: post_id,
+          replyid: comment_id,
+          owner:  user.fname+" "+user.lname,
+          message: data,
+          class: sent_class,
+          options:ops,
+          room: socket.room,
+          likes:"0",
+          key: key_in+','+user.fname+" "+user.lname,
+          type: user.type
+          
+      });
 
-  });
-  newMessage.save(function (err) {
-    if (err) {
-      return err;
-    }
-    else {
-      console.log("Post saved");
-    }
-  });
+      newMessage.save(function (err) {
+        if (err) {
+          return err;
+        }
+        else {
+          console.log("Post saved");
+        }
+      });
 
-     var d_button = '<button class="delete_button">delete</button>';
+         var d_button = '<button class="delete_button">delete</button>';
 
-    io.sockets.in(socket.room).emit('updatechat', user.fname+" "+user.lname,sent_class, data,counter,post_id,comment_id, user.type);
+        io.sockets.in(socket.room).emit('updatechat', user.fname+" "+user.lname,sent_class, data,counter,post_id,comment_id, user.type);
 
-  });
+      });
 });
 
 socket.on('deletepost',  function(pid) {

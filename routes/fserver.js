@@ -42,15 +42,32 @@ var f_count = 0;
 
         // console.log('--- ' + fields.pathf + '/' + files.fileUploaded.name);
         // initpath
-        var final_path = initpath+ fields.pathf+"/file"+f_count+"."+(files.fileUploaded.name).split('.').pop();
+
+        function generateUUID() {
+          var d = new Date().getTime();
+          var uuid = 'xxxxxxxx_xxxx_4xxx_yxxx_xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+              var r = (d + Math.random()*16)%16 | 0;
+              d = Math.floor(d/16);
+              return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+          });
+          return uuid;
+        }
+
+        var file = generateUUID();
+
+        var final_path = initpath+ fields.pathf+"/"+file+f_count+"."+(files.fileUploaded.name).split('.').pop();
 
 
         console.log(final_path);
+
+
+
         fs.rename(files.fileUploaded.path, final_path , function (err) {
             if (err)
                 throw err;
             console.log('renamed complete');
-            res.send("https://jk-sl.herokuapp.com/img_stores/uploads/Lobby/"+"file"+f_count+"."+(files.fileUploaded.name).split('.').pop());
+
+            res.send("http://localhost:4000/img_stores/uploads/Lobby/"+file+f_count+"."+(files.fileUploaded.name).split('.').pop());
   f_count = f_count + 1;
         });
         //res.end();
@@ -116,7 +133,7 @@ router.post('/upload_profile_picture', function (req, res, next) {
                 {
                         $set: {
                             'user': req.user._id,
-                            'picture':'https://jk-sl.herokuapp.com/img_stores/profile/'+ p_file
+                            'picture':'http://localhost:1337/img_stores/profile/'+ p_file
                         }
                     },
                 { upsert: true },

@@ -9,8 +9,6 @@ $(document).ready(function() {
     hashchanged();
   //}
 
-
-
 function hashchanged(){
  var hash = window.location.href.split('/').pop().replace(/\?/g,'');
  var find_convo = $('#conversation').length;

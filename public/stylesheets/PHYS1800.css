@@ -22,7 +22,8 @@ body {
 }
 
 #head_Bar {
-  background-image:url('/images/lassonde.png');
+/*background-image:url('/images/lassonde.png');*/
+  background: white;
 	min-width: 800px;
 	width: 800px;
 	z-index: auto;
